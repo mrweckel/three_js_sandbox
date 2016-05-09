@@ -1,23 +1,25 @@
 'use strict'
 
-document.addEventListener("DOMContentLoaded", function(){
+// set vars
 
+var APP = {}
+
+function init(){
   //doc specific variables
   var CANVAS = document.getElementById('canvas');
 
-  var scene = new THREE.Scene();
-  console.log(scene);
+  APP.scene = new THREE.Scene();
 
-  var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+  APP.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-  var renderer = new THREE.WebGLRenderer();
-  renderer.setClearColorHex(0xEEEEEE);
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.shadowMapEnabled = true; //Adds shadows
+  APP.renderer = new THREE.WebGLRenderer();
+  APP.renderer.setClearColorHex(0xEEEEEE);
+  APP.renderer.setSize(window.innerWidth, window.innerHeight);
+  APP.renderer.shadowMapEnabled = true; //Adds shadows
 
 
   var axes = new THREE.AxisHelper(20);
-  scene.add(axes);
+  APP.scene.add(axes);
 
   //PLANE
   var planeGeometry = new THREE.PlaneGeometry(60,20);
@@ -32,7 +34,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
   plane.receiveShadow = true;
 
-  scene.add(plane);
+  APP.scene.add(plane);
 
   //CUBE
   var cubeGeometry = new THREE.CubeGeometry(4,4,4);
@@ -45,7 +47,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
   cube.castShadow = true;
 
-  scene.add(cube);
+  APP.scene.add(cube);
 
   //SPHERE
   var sphereGeometry = new THREE.SphereGeometry(4,20,20);
@@ -58,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
   sphere.castShadow = true;
 
-  scene.add(sphere);
+  APP.scene.add(sphere);
 
   //SPOTLIGHT
   var spotlight = new THREE.SpotLight(0xffffff);
@@ -66,13 +68,13 @@ document.addEventListener("DOMContentLoaded", function(){
   spotlight.position.set(-40, 60, -10);
   spotlight.castShadow = true;
 
-  scene.add(spotlight);
+  APP.scene.add(spotlight);
 
   //CAMERA POSITION
-  camera.position.x = -30;
-  camera.position.y =  40;
-  camera.position.z =  30;
-  camera.lookAt(scene.position);
+  APP.camera.position.x = -30;
+  APP.camera.position.y =  40;
+  APP.camera.position.z =  30;
+  APP.camera.lookAt(APP.scene.position);
 
   var step = 0;
 
@@ -86,18 +88,22 @@ document.addEventListener("DOMContentLoaded", function(){
     sphere.position.y =  2 + (10 * (Math.abs(Math.sin(step))));
 
     requestAnimationFrame(render);
-    renderer.render(scene, camera);
+    APP.renderer.render(APP.scene, APP.camera);
   }
 
-
-  // function renderScene() {
-  //   requestAnimationFrame(renderScene);
-  //   renderer.render(scene, camera);
-  // }
-
-  CANVAS.appendChild(renderer.domElement);
+  CANVAS.appendChild(APP.renderer.domElement);
   render();
 
+}
 
+// resizeScene NOT WORKING???
 
-});
+function resizeScene(){
+ APP.camera.aspect = window.innerWidth / window.innerHeight;
+ APP.camera.updateProjectionMatrix();
+ APP.renderer.setSize(window.innerWidth / window.innerHeight);
+}
+
+document.addEventListener("DOMContentLoaded", init, false);
+
+window.addEventListener('resize', resizeScene, false);
