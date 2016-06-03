@@ -10,7 +10,12 @@ function init(){
   var scene = new THREE.Scene();
 
   //THREE.PerspectiveCamera(FOV, aspect ratio, near, far);
-  var camera =new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+  var camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
+
+   var axes = new THREE.AxisHelper(20);
+    scene.add(axes);
+
+   var step = 0;
 
   var webGLRenderer = new THREE.WebGLRenderer();
   webGLRenderer.setClearColor(new THREE.Color(0xEEEEEE, 1.0));
@@ -19,20 +24,18 @@ function init(){
 
   var video = document.getElementById('video');
   texture = new THREE.VideoTexture(video);
+  var material = new THREE.MeshBasicMaterial({map: texture, side: THREE.BackSide});
 
-  // var sphereGeometry = new THREE.SphereGeometry(4, 20, 20);
-  // var sphereMaterial = new THREE.MeshBasicMaterial({color: 0x7777ff}, wireframe: true});
-  // var sphere = new THREE.Mesh(sphereGeometry);
-  var sphere = createMesh(new THREE.SphereGeometry(4, 20, 20), "floor-wood.jpg");
+  var sphere = new THREE.Mesh(new THREE.SphereGeometry(20, 20, 20), material);
 
-  sphere.position.x = 20;
-  sphere.position.y =  4;
-  sphere.position.z =  2;
+  sphere.position.x = 0;
+  sphere.position.y = 0;
+  sphere.position.z = 0;
   scene.add(sphere);
 
-  camera.position.x = 00;
-  camera.position,y = 1;
-  camera.position.z = 28;
+  camera.position.x = 0;
+  camera.position.y = 1;
+  camera.position.z = 0;
   camera.lookAt(new THREE.Vector3(0,0,0));
 
   var ambiLight = new THREE.AmbientLight(0x141414);
@@ -44,12 +47,16 @@ function init(){
 
   document.getElementById("canvas").appendChild(webGLRenderer.domElement);
 
+  console.log('webGLRenderer.domElement');
+
   var step = 0;
 
   render();
 
   function render(){
     console.log('hello');
+    sphere.rotation.z = step += 0.01;
+
     requestAnimationFrame(render);
     webGLRenderer.render(scene, camera);
   }
@@ -57,6 +64,6 @@ function init(){
 
 }
 
-window.onload = init;
+document.addEventListener('DOMContentLoaded', init, false);
 
 
